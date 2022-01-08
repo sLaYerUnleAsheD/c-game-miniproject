@@ -1,0 +1,215 @@
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <conio.h>
+
+int i,j,score=0,ko=0,h=20,w=30,x,keycode,enemyY,bullet=28,bullx,bully,missHit=0;
+char userinput;
+int isGame1 = 0;
+int isGame2 = 0;
+int choiceInput;
+
+void setup()
+{
+    x = w/30;
+    label1:
+      enemyY = rand()%28;
+      if(enemyY==0)
+        goto label1;
+}
+
+void boundary()
+{
+    system("cls");
+    for(i=0; i<h; i++)
+    {
+        for(j=0; j<w; j++)
+        {
+            if(i==0 || i==h-1 || j==0 || j==w-1)
+              printf("~");
+            else if(i==h-2 && j==x)
+            {
+                printf("O");
+            }
+            else if(i==1 && j == enemyY)
+              printf("\b\b*o*");
+            else
+              printf(" ");
+        }
+        printf("\n");
+    }
+    printf("Score: %d\n",score);
+    printf("Press x to quit.\n");
+}
+
+void input()
+{
+    if(!ko)
+    {
+        userinput = getche();
+        switch(userinput)
+        {
+            case 'a':
+              keycode = 1;
+              break;
+            case 'd':
+              keycode = 2;
+              break;
+            case 'f':
+              keycode = 3;
+              break;
+            case 'x':
+              ko = 1;
+              break;
+            default:
+              break;
+        }
+    }
+}
+
+void working()
+{
+    switch(keycode)
+    {
+        case 1:
+          x--;
+          break;
+        case 2:
+          x++;
+          break;
+        case 3:
+          for(i=0; i<h; i++)
+          {
+              for(j=0; j<w; j++)
+              {
+                  if(j==x && i>0 && i<28)
+                  {
+                      printf("^");
+                      bullx = x;
+                  }
+                  else
+                  {
+                      printf(" ");
+                  }
+              }
+              printf("\n");
+          }
+          break;
+        default:
+          break;
+    }
+    if(bullx == enemyY || bullx == enemyY+1 || bullx == enemyY-1)
+    {
+        label2:
+        enemyY = rand()%28;
+        if(enemyY==0)
+          goto label2;
+        score += 10;
+    }
+}
+
+void play()
+{
+   printf("\n\n");
+   int number,guess,nguess=1;
+   srand(time(0));
+   number=rand()%100+1;
+   printf("Guess the number between 1 to 100\n");
+   do
+   {
+       scanf("%d",&guess);
+       if(guess>number)
+       {
+           printf("lower number please\n");
+       }
+       else if(guess<number)
+       {
+           printf("higher number pls\n");
+       }
+       else
+       {
+           printf("you guessed in %d attempts\n",nguess);
+       }
+       nguess++;
+   }
+   while(guess!=number);
+
+}
+int X()
+{
+
+    printf("\n\n\tINSTRUCTIONS\n");
+    printf("\t------------\n");
+    printf("\nThe computer will randomly choose a number and all you need is to guess it with hints after each successive attempts\n");
+    printf("So lets begin!!\n\n");
+    play();
+    return 0;
+
+}
+void mscreen()
+{
+    system("cls");
+    printf("\tGUESS THE NUMBER\n");
+    printf("\t****************\n");
+    char choice=' ';
+    printf("      [A] Play\n");
+    printf("      [B] Instructions\n");
+
+    printf("Enter your choice here : ");
+    scanf("%c", &choice);
+    if(choice=='A')
+    {
+        play();
+
+    }
+    else if(choice=='B')
+    {
+        X();
+
+    }
+    else
+    {
+        mscreen();
+
+    }
+}
+
+
+int main()
+{
+    char cont;
+    printf("Enter Game Choice:\n'1' = Shooter Game\n'2' = Guess the Number game\n");
+    scanf("%d",&choiceInput);
+    switch(choiceInput)
+    {
+        case 1: printf("\tAbout the game:\n\nYou are 'O' and you have to shoot down '*o*'\nto score 10 points on each successful hit.\n\n");
+        printf("\tHow to play:\n\nPress 'a' key to move left and 'd' key to move right, press 'f' key to shoot.\nShoot till you get tired!\n\n");
+        printf("Press any key to continue.");
+        cont = getche();
+        switch(cont)
+        {
+            default: isGame1 = 1;
+            break;
+        }
+        break;
+        case 2: isGame2 = 1;
+        break;
+        default: printf("Invalid Choice!");
+        break;
+    }
+    if(isGame1)
+    {
+        setup();
+        while(!ko)
+        {
+            boundary();
+            input();
+            working();
+        }
+    }
+    if(isGame2)
+    {
+         mscreen();
+    }
+    return 0;
+}
